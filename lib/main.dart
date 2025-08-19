@@ -1,5 +1,10 @@
+import 'dart:ui';
+
 import 'package:ditonton/common/constants.dart';
 import 'package:ditonton/common/utils.dart';
+import 'package:ditonton/data/datasources/movie_remote_data_source.dart';
+import 'package:ditonton/firebase_options.dart';
+import 'package:ditonton/pinned_http_client.dart';
 import 'package:ditonton/presentation/pages/about_page.dart';
 import 'package:ditonton/presentation/pages/movie_detail_page.dart';
 import 'package:ditonton/presentation/pages/home_page.dart';
@@ -22,6 +27,8 @@ import 'package:ditonton/presentation/provider/tv_series_list_notifier.dart';
 import 'package:ditonton/presentation/provider/tv_series_search_notifier.dart';
 import 'package:ditonton/presentation/provider/top_rated_tv_series_notifier.dart';
 import 'package:ditonton/presentation/provider/watchlist_tv_series_notifier.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,9 +40,23 @@ import 'presentation/pages/top_rated_tv_series_page.dart';
 import 'presentation/pages/tv_series_detail_page.dart';
 import 'presentation/provider/popular_tv_series_notifier.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+final pinnedClient = await PinnedHttpClient.create();
+
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
   di.init();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

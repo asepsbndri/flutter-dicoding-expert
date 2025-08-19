@@ -20,6 +20,7 @@ import 'package:ditonton/domain/usecases/save_watchlist_movies.dart';
 import 'package:ditonton/domain/usecases/search_movies.dart';
 import 'package:ditonton/domain/usecases/search_tv_series.dart'
     show SearchTvSeries;
+import 'package:ditonton/pinned_http_client.dart';
 import 'package:ditonton/presentation/provider/movie_detail_notifier.dart';
 import 'package:ditonton/presentation/provider/movie_list_notifier.dart';
 import 'package:ditonton/presentation/provider/movie_search_notifier.dart';
@@ -47,6 +48,14 @@ import 'presentation/provider/watchlist_tv_series_notifier.dart';
 
 final locator = GetIt.instance;
 
+
+void setup() async {
+  locator.registerSingletonAsync<PinnedHttpClient>(() async => await PinnedHttpClient.create());
+  locator.registerSingletonWithDependencies<MovieRemoteDataSource>(
+    () => MovieRemoteDataSourceImpl(client: locator<PinnedHttpClient>()),
+    dependsOn: [PinnedHttpClient],
+  );
+}
 void init() {
   // provider
   locator.registerFactory(
