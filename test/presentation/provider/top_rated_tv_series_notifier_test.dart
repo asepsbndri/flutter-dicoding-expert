@@ -19,10 +19,11 @@ void main() {
   setUp(() {
     listenerCallCount = 0;
     mockGetTopRatedTvSeries = MockGetTopRatedTvSeries();
-    provider = TopRatedTvSeriesNotifier(getTopRatedTvSeries: mockGetTopRatedTvSeries)
-      ..addListener(() {
-        listenerCallCount += 1;
-      });
+    provider =
+        TopRatedTvSeriesNotifier(getTopRatedTvSeries: mockGetTopRatedTvSeries)
+          ..addListener(() {
+            listenerCallCount += 1;
+          });
   });
 
   final tTvSeries = TvSeries(

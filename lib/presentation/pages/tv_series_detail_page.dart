@@ -61,7 +61,10 @@ class DetailContent extends StatelessWidget {
   final List<TvSeries> recommendations;
   final bool isAddedWatchlist;
 
-  const DetailContent(this.tvSeries, this.recommendations, this.isAddedWatchlist, {Key? key}) : super(key: key);
+  const DetailContent(
+      this.tvSeries, this.recommendations, this.isAddedWatchlist,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -215,7 +215,8 @@ class SubHeading extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
-  const SubHeading({Key? key, required this.title, required this.onTap}) : super(key: key);
+  const SubHeading({Key? key, required this.title, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -37,7 +37,7 @@ void main() {
 
     final watchlistButtonIcon = find.byIcon(Icons.add);
 
-    await tester.pumpWidget(makeTestableWidget( TvSeriesDetailPage(id: 1)));
+    await tester.pumpWidget(makeTestableWidget(TvSeriesDetailPage(id: 1)));
 
     expect(watchlistButtonIcon, findsOneWidget);
   });
@@ -53,57 +53,56 @@ void main() {
 
     final watchlistButtonIcon = find.byIcon(Icons.check);
 
-    await tester.pumpWidget(makeTestableWidget( TvSeriesDetailPage(id: 1)));
+    await tester.pumpWidget(makeTestableWidget(TvSeriesDetailPage(id: 1)));
 
     expect(watchlistButtonIcon, findsOneWidget);
   });
 
   testWidgets(
-  'Watchlist button should display Snackbar when added to watchlist',
-  (WidgetTester tester) async {
-    when(mockNotifier.tvSeriesState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.tvSeries).thenReturn(testTvSeriesDetail);
-    when(mockNotifier.recommendationState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.tvSeriesRecommendations).thenReturn(<TvSeries>[]);
-    when(mockNotifier.isAddedToWatchlist).thenReturn(false);
-    when(mockNotifier.watchlistMessage).thenReturn('Added to Watchlist');
+    'Watchlist button should display Snackbar when added to watchlist',
+    (WidgetTester tester) async {
+      when(mockNotifier.tvSeriesState).thenReturn(RequestState.Loaded);
+      when(mockNotifier.tvSeries).thenReturn(testTvSeriesDetail);
+      when(mockNotifier.recommendationState).thenReturn(RequestState.Loaded);
+      when(mockNotifier.tvSeriesRecommendations).thenReturn(<TvSeries>[]);
+      when(mockNotifier.isAddedToWatchlist).thenReturn(false);
+      when(mockNotifier.watchlistMessage).thenReturn('Added to Watchlist');
 
-    final watchlistButton = find.byType(FilledButton);
+      final watchlistButton = find.byType(FilledButton);
 
-    await tester.pumpWidget(makeTestableWidget(TvSeriesDetailPage(id: 1)));
+      await tester.pumpWidget(makeTestableWidget(TvSeriesDetailPage(id: 1)));
 
-    expect(find.byIcon(Icons.add), findsOneWidget);
+      expect(find.byIcon(Icons.add), findsOneWidget);
 
-    await tester.tap(watchlistButton);
-    await tester.pump();
+      await tester.tap(watchlistButton);
+      await tester.pump();
 
-    expect(find.byType(SnackBar), findsOneWidget);
-    expect(find.text('Added to Watchlist'), findsOneWidget);
-  },
-);
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.text('Added to Watchlist'), findsOneWidget);
+    },
+  );
 
   testWidgets(
-  'Watchlist button should display AlertDialog when add to watchlist failed',
-  (WidgetTester tester) async {
-    when(mockNotifier.tvSeriesState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.tvSeries).thenReturn(testTvSeriesDetail);
-    when(mockNotifier.recommendationState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.tvSeriesRecommendations).thenReturn(<TvSeries>[]);
-    when(mockNotifier.isAddedToWatchlist).thenReturn(false);
-    when(mockNotifier.watchlistMessage).thenReturn('Failed');
+    'Watchlist button should display AlertDialog when add to watchlist failed',
+    (WidgetTester tester) async {
+      when(mockNotifier.tvSeriesState).thenReturn(RequestState.Loaded);
+      when(mockNotifier.tvSeries).thenReturn(testTvSeriesDetail);
+      when(mockNotifier.recommendationState).thenReturn(RequestState.Loaded);
+      when(mockNotifier.tvSeriesRecommendations).thenReturn(<TvSeries>[]);
+      when(mockNotifier.isAddedToWatchlist).thenReturn(false);
+      when(mockNotifier.watchlistMessage).thenReturn('Failed');
 
-    final watchlistButton = find.byType(FilledButton);
+      final watchlistButton = find.byType(FilledButton);
 
-    await tester.pumpWidget(makeTestableWidget(TvSeriesDetailPage(id: 1)));
+      await tester.pumpWidget(makeTestableWidget(TvSeriesDetailPage(id: 1)));
 
-    expect(find.byIcon(Icons.add), findsOneWidget);
+      expect(find.byIcon(Icons.add), findsOneWidget);
 
-    await tester.tap(watchlistButton);
-    await tester.pump();
+      await tester.tap(watchlistButton);
+      await tester.pump();
 
-    expect(find.byType(AlertDialog), findsOneWidget);
-    expect(find.text('Failed'), findsOneWidget);
-  },
-);
-
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text('Failed'), findsOneWidget);
+    },
+  );
 }

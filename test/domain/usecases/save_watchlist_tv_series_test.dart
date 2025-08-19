@@ -45,10 +45,11 @@ void main() {
     verifyNoMoreInteractions(mockTvSeriesRepository);
   });
 
-  test('should return DatabaseFailure when saving to watchlist is unsuccessful', () async {
+  test('should return DatabaseFailure when saving to watchlist is unsuccessful',
+      () async {
     // arrange
-    when(mockTvSeriesRepository.saveWatchlist(tTvSeriesDetail))
-        .thenAnswer((_) async => Left(DatabaseFailure("Failed to add watchlist")));
+    when(mockTvSeriesRepository.saveWatchlist(tTvSeriesDetail)).thenAnswer(
+        (_) async => Left(DatabaseFailure("Failed to add watchlist")));
 
     // act
     final result = await usecase.execute(tTvSeriesDetail);

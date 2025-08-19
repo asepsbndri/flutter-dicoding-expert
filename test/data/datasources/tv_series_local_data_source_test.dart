@@ -12,7 +12,8 @@ void main() {
 
   setUp(() {
     mockDatabaseHelper = MockDatabaseHelper();
-    dataSource = TvSeriesLocalDataSourceImpl(databaseHelper: mockDatabaseHelper);
+    dataSource =
+        TvSeriesLocalDataSourceImpl(databaseHelper: mockDatabaseHelper);
   });
 
   group('save watchlist', () {

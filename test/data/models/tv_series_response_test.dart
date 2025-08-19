@@ -19,7 +19,6 @@ void main() {
     voteCount: 9445,
     name: "Wednesday",
     originalName: "Wednesday",
-   
   );
 
   final tTvSeriesResponse = TvSeriesResponse(tvSeriesList: [tTvSeriesModel]);

@@ -24,8 +24,10 @@ void main() {
   Widget makeTestableWidget(Widget body) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<MovieListNotifier>.value(value: mockMovieNotifier),
-        ChangeNotifierProvider<TvSeriesListNotifier>.value(value: mockTvNotifier),
+        ChangeNotifierProvider<MovieListNotifier>.value(
+            value: mockMovieNotifier),
+        ChangeNotifierProvider<TvSeriesListNotifier>.value(
+            value: mockTvNotifier),
       ],
       child: MaterialApp(home: body),
     );
@@ -35,7 +37,8 @@ void main() {
       (tester) async {
     when(mockMovieNotifier.nowPlayingState).thenReturn(RequestState.Loading);
     when(mockMovieNotifier.popularMoviesState).thenReturn(RequestState.Loading);
-    when(mockMovieNotifier.topRatedMoviesState).thenReturn(RequestState.Loading);
+    when(mockMovieNotifier.topRatedMoviesState)
+        .thenReturn(RequestState.Loading);
     when(mockTvNotifier.onAiringState).thenReturn(RequestState.Loading);
     when(mockTvNotifier.popularTvSeriesState).thenReturn(RequestState.Loading);
     when(mockTvNotifier.topRatedTvSeriesState).thenReturn(RequestState.Loading);
@@ -65,5 +68,4 @@ void main() {
 
     expect(find.byType(ListView), findsWidgets);
   });
-
 }

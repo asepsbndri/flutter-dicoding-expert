@@ -11,7 +11,7 @@ void main() {
 
   testWidgets('AboutPage should display logo, text and back button',
       (WidgetTester tester) async {
-    await tester.pumpWidget(makeTestableWidget( AboutPage()));
+    await tester.pumpWidget(makeTestableWidget(AboutPage()));
 
     expect(find.byType(Image), findsOneWidget);
 
@@ -23,14 +23,13 @@ void main() {
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);
   });
 
-  testWidgets('Back button should pop the page',
-      (WidgetTester tester) async {
+  testWidgets('Back button should pop the page', (WidgetTester tester) async {
     final testKey = GlobalKey<NavigatorState>();
 
     await tester.pumpWidget(
       MaterialApp(
         navigatorKey: testKey,
-        home:  AboutPage(),
+        home: AboutPage(),
       ),
     );
 

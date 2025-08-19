@@ -18,7 +18,8 @@ void main() {
 
   setUp(() {
     mockGetWatchlistTvSeries = MockGetWatchlistTvSeries();
-    provider = WatchlistTvSeriesNotifier(getWatchlistTvSeries: mockGetWatchlistTvSeries);
+    provider = WatchlistTvSeriesNotifier(
+        getWatchlistTvSeries: mockGetWatchlistTvSeries);
     listenerCallCount = 0;
     provider.addListener(() {
       listenerCallCount++;
@@ -54,7 +55,8 @@ void main() {
       expect(listenerCallCount, 1);
     });
 
-    test('should return tv series list when data is successfully fetched', () async {
+    test('should return tv series list when data is successfully fetched',
+        () async {
       // arrange
       when(mockGetWatchlistTvSeries.execute())
           .thenAnswer((_) async => Right(tTvSeriesList));

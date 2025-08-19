@@ -31,7 +31,8 @@ void main() {
     numberOfEpisodes: 9,
   );
 
-  test('should remove watchlist tv series from repository when success', () async {
+  test('should remove watchlist tv series from repository when success',
+      () async {
     // arrange
     when(mockTvSeriesRepository.removeWatchlist(tTvSeriesDetail))
         .thenAnswer((_) async => const Right("Removed from Watchlist"));
@@ -45,10 +46,11 @@ void main() {
     verifyNoMoreInteractions(mockTvSeriesRepository);
   });
 
-  test('should return DatabaseFailure when remove watchlist is unsuccessful', () async {
+  test('should return DatabaseFailure when remove watchlist is unsuccessful',
+      () async {
     // arrange
-    when(mockTvSeriesRepository.removeWatchlist(tTvSeriesDetail))
-        .thenAnswer((_) async => Left(DatabaseFailure("Failed to remove watchlist")));
+    when(mockTvSeriesRepository.removeWatchlist(tTvSeriesDetail)).thenAnswer(
+        (_) async => Left(DatabaseFailure("Failed to remove watchlist")));
 
     // act
     final result = await usecase.execute(tTvSeriesDetail);

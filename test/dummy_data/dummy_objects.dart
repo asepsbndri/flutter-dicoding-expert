@@ -61,7 +61,6 @@ final testMovieMap = {
   'title': 'title',
 };
 
-
 final testTvSeries = TvSeries(
   adult: false,
   backdropPath: '/path/to/backdrop.jpg',
@@ -92,7 +91,6 @@ final testTvSeriesDetail = TvSeriesDetail(
   numberOfSeasons: 1,
   numberOfEpisodes: 9,
 );
-
 
 final testWatchlistTvSeries = TvSeries.watchlist(
   id: 1,

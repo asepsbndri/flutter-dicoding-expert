@@ -26,8 +26,7 @@ void main() {
     );
   }
 
-  testWidgets('Should display progress indicator when loading',
-      (tester) async {
+  testWidgets('Should display progress indicator when loading', (tester) async {
     when(mockNotifier.state).thenReturn(RequestState.Loading);
 
     await tester.pumpWidget(makeTestableWidget(OnAiringTvSeriesPage()));

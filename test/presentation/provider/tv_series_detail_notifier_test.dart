@@ -74,7 +74,6 @@ void main() {
     genreIds: [1, 2, 3],
     id: 1,
     name: 'Test Series',
-   
     originalName: 'Original Name',
     overview: 'Overview',
     popularity: 120.0,
@@ -119,8 +118,8 @@ void main() {
       // arrange
       when(mockGetTvSeriesDetail.execute(tId))
           .thenAnswer((_) async => Right(tTvSeriesDetail));
-      when(mockGetTvSeriesRecommendations.execute(tId))
-          .thenAnswer((_) async => Left(ServerFailure('Recommendation Failure')));
+      when(mockGetTvSeriesRecommendations.execute(tId)).thenAnswer(
+          (_) async => Left(ServerFailure('Recommendation Failure')));
       // act
       await provider.fetchTvSeriesDetail(tId);
       // assert

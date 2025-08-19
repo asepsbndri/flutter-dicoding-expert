@@ -29,7 +29,7 @@ void main() {
   });
 
   final tTvSeriesModel = TvSeriesModel(
-  adult: false,
+    adult: false,
     backdropPath: "/path.jpg",
     firstAirDate: "2021-09-17",
     genreIds: [18],
@@ -44,7 +44,7 @@ void main() {
   );
 
   final tTvSeries = TvSeries(
-  adult: false,
+    adult: false,
     backdropPath: "/path.jpg",
     firstAirDate: "2021-09-17",
     genreIds: [18],
@@ -84,8 +84,8 @@ void main() {
       when(mockRemoteDataSource.getOnAiringTvSeries())
           .thenThrow(SocketException('Failed to connect to the network'));
       final result = await repository.getOnAiringTvSeries();
-      expect(result,
-          Left(ConnectionFailure('Failed to connect to the network')));
+      expect(
+          result, Left(ConnectionFailure('Failed to connect to the network')));
     });
   });
 

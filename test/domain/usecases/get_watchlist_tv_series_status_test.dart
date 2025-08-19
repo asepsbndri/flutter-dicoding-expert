@@ -15,7 +15,8 @@ void main() {
 
   const tId = 1;
 
-  test('should return watchlist status (true) when tv series is added', () async {
+  test('should return watchlist status (true) when tv series is added',
+      () async {
     // arrange
     when(mockTvSeriesRepository.isAddedToWatchlist(tId))
         .thenAnswer((_) async => true);
@@ -29,7 +30,8 @@ void main() {
     verifyNoMoreInteractions(mockTvSeriesRepository);
   });
 
-  test('should return watchlist status (false) when tv series is not added', () async {
+  test('should return watchlist status (false) when tv series is not added',
+      () async {
     // arrange
     when(mockTvSeriesRepository.isAddedToWatchlist(tId))
         .thenAnswer((_) async => false);

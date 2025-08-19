@@ -32,7 +32,6 @@ void main() {
     genreIds: [1, 2, 3],
     id: 1,
     name: 'Popular Test Series',
- 
     originalName: 'Original Name',
     overview: 'Overview',
     popularity: 10.0,
