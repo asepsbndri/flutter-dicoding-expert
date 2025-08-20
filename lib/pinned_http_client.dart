@@ -9,7 +9,16 @@ class PinnedHttpClient extends http.BaseClient {
 
   PinnedHttpClient({required this.securityContext}) {
     final httpClient = HttpClient(context: securityContext);
-    httpClient.connectionTimeout = Duration(seconds: 10);
+
+    // Timeout
+    httpClient.connectionTimeout = const Duration(seconds: 10);
+
+    httpClient.badCertificateCallback =
+        (X509Certificate cert, String host, int port) {
+      
+      return false; 
+    };
+
     _innerClient = IOClient(httpClient);
   }
 
@@ -31,6 +40,7 @@ class PinnedHttpClient extends http.BaseClient {
       final sslCert = await rootBundle.load('certificates/certificates.pem');
       final securityContext = SecurityContext(withTrustedRoots: false);
       securityContext.setTrustedCertificatesBytes(sslCert.buffer.asInt8List());
+
       return PinnedHttpClient(securityContext: securityContext);
     } catch (e) {
       throw Exception('Gagal memuat sertifikat: $e');
