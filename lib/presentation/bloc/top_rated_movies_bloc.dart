@@ -15,6 +15,7 @@ class TopRatedMoviesBloc extends Bloc<TopRatedMoviesEvent, TopRatedMoviesState> 
 
       final result = await getTopRatedMovies.execute();
 
+
       result.fold(
         (failure) {
           emit(state.copyWith(

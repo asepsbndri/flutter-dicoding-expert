@@ -1,57 +1,105 @@
-// import 'package:ditonton/common/state_enum.dart';
-// import 'package:ditonton/presentation/pages/top_rated_tv_series_page.dart';
-// import 'package:ditonton/presentation/provider/top_rated_tv_series_notifier.dart';
-// import 'package:ditonton/presentation/widgets/tv_series_card.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:mockito/annotations.dart';
-// import 'package:mockito/mockito.dart';
-// import 'package:provider/provider.dart';
+import 'package:ditonton/common/state_enum.dart';
+import 'package:ditonton/domain/entities/tv_series.dart';
+import 'package:ditonton/presentation/bloc/top_rated_tv_series_bloc.dart';
+import 'package:ditonton/presentation/bloc/top_rated_tv_series_event.dart';
+import 'package:ditonton/presentation/bloc/top_rated_tv_series_state.dart';
+import 'package:ditonton/presentation/pages/top_rated_tv_series_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
-// import '../../dummy_data/dummy_objects.dart';
-// import 'top_rated_tv_series_page_test.mocks.dart';
+class MockTopRatedTvSeriesBloc extends Mock implements TopRatedTvSeriesBloc {}
 
-// @GenerateMocks([TopRatedTvSeriesNotifier])
-// void main() {
-//   late MockTopRatedTvSeriesNotifier mockNotifier;
+class FakeTopRatedTvSeriesEvent extends Fake implements TopRatedTvSeriesEvent {}
 
-//   setUp(() {
-//     mockNotifier = MockTopRatedTvSeriesNotifier();
-//   });
+class FakeTopRatedTvSeriesState extends Fake implements TopRatedTvSeriesState {}
 
-//   Widget makeTestableWidget(Widget body) {
-//     return ChangeNotifierProvider<TopRatedTvSeriesNotifier>.value(
-//       value: mockNotifier,
-//       child: MaterialApp(home: body),
-//     );
-//   }
+void main() {
+  late MockTopRatedTvSeriesBloc mockBloc;
 
-//   testWidgets('Should display loading indicator when state is loading',
-//       (WidgetTester tester) async {
-//     when(mockNotifier.state).thenReturn(RequestState.Loading);
+  setUpAll(() {
+    registerFallbackValue(FakeTopRatedTvSeriesEvent());
+    registerFallbackValue(FakeTopRatedTvSeriesState());
+  });
 
-//     await tester.pumpWidget(makeTestableWidget(TopRatedTvSeriesPage()));
+  setUp(() {
+    mockBloc = MockTopRatedTvSeriesBloc();
+  });
 
-//     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-//   });
+  Widget makeTestableWidget() {
+    return BlocProvider<TopRatedTvSeriesBloc>.value(
+      value: mockBloc,
+      child: const MaterialApp(
+        home: TopRatedTvSeriesPage(),
+      ),
+    );
+  }
 
-//   testWidgets('Should display TvSeriesCard when data is loaded',
-//       (WidgetTester tester) async {
-//     when(mockNotifier.state).thenReturn(RequestState.Loaded);
-//     when(mockNotifier.tvSeries).thenReturn([testTvSeries]);
+  // testWidgets('menampilkan loading indicator ketika state Loading',
+  //     (WidgetTester tester) async {
+  //   when(() => mockBloc.state).thenReturn(
+  //     TopRatedTvSeriesState(state: RequestState.Loading),
+  //   );
 
-//     await tester.pumpWidget(makeTestableWidget(TopRatedTvSeriesPage()));
+  //   await tester.pumpWidget(makeTestableWidget());
 
-//     expect(find.byType(TvSeriesCard), findsOneWidget);
-//   });
+  //   expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  // });
 
-//   testWidgets('Should display error message when state is error',
-//       (WidgetTester tester) async {
-//     when(mockNotifier.state).thenReturn(RequestState.Error);
-//     when(mockNotifier.message).thenReturn('Failed to fetch data');
+  // testWidgets('menampilkan ListView ketika state Loaded',
+  //     (WidgetTester tester) async {
+  //   final tv = TvSeries(
+  //     adult: false,
+  //     id: 1,
+  //     name: 'Breaking Bad',
+  //     overview: 'Overview',
+  //     posterPath: '/poster.jpg',
+  //     backdropPath: '/backdrop.jpg',
+  //     voteAverage: 9.0,
+  //     voteCount: 100,
+  //     firstAirDate: '2008-01-01',
+  //     genreIds: const [1, 2],
+  //     originalName: 'Breaking Bad',
+  //     popularity: 99.9,
+  //   );
 
-//     await tester.pumpWidget(makeTestableWidget(TopRatedTvSeriesPage()));
+  //   when(() => mockBloc.state).thenReturn(
+  //     TopRatedTvSeriesState(
+  //       state: RequestState.Loaded,
+  //       tvSeries: [tv],
+  //     ),
+  //   );
 
-//     expect(find.text('Failed to fetch data'), findsOneWidget);
-//   });
-// }
+  //   await tester.pumpWidget(makeTestableWidget());
+
+  //   expect(find.byType(ListView), findsOneWidget);
+  //   expect(find.text('Test TV'), findsOneWidget);
+  // });
+
+  // testWidgets('menampilkan error message ketika state Error',
+  //     (WidgetTester tester) async {
+  //   when(() => mockBloc.state).thenReturn(
+  //     TopRatedTvSeriesState(
+  //       state: RequestState.Error,
+  //       message: 'Error Message',
+  //     ),
+  //   );
+
+  //   await tester.pumpWidget(makeTestableWidget());
+
+  //   expect(find.byKey(const Key('error_message')), findsOneWidget);
+  //   expect(find.text('Error Message'), findsOneWidget);
+  // });
+
+  // testWidgets('menampilkan teks default ketika state Empty',
+  //     (WidgetTester tester) async {
+  //   when(() => mockBloc.state).thenReturn(
+  //     TopRatedTvSeriesState(state: RequestState.Empty),
+  //   );
+
+  //   await tester.pumpWidget(makeTestableWidget());
+
+  //   expect(find.text('Tidak ada data'), findsOneWidget);
+  // });
+}

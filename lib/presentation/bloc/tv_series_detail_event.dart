@@ -28,6 +28,7 @@ class RemoveWatchlistTvSeriesEvent extends TvSeriesDetailEvent {
   final TvSeriesDetail tvSeries;
   const RemoveWatchlistTvSeriesEvent(this.tvSeries);
 
+
   @override
   List<Object?> get props => [tvSeries];
 }

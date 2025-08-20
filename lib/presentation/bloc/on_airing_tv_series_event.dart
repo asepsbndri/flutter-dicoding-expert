@@ -8,3 +8,4 @@ abstract class OnAiringTvSeriesEvent extends Equatable {
 }
 
 class FetchOnAiringTvSeries extends OnAiringTvSeriesEvent {}
+

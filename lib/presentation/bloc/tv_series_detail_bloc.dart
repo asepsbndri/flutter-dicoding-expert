@@ -97,6 +97,7 @@ class TvSeriesDetailBloc extends Bloc<TvSeriesDetailEvent, TvSeriesDetailState> 
       );
     });
 
+
     // Load watchlist status
     on<LoadWatchlistStatusTvSeriesEvent>((event, emit) async {
       final result = await getWatchListStatus.execute(event.id);

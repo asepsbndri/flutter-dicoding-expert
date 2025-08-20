@@ -20,7 +20,6 @@ class _PopularTvSeriesPageState extends State<PopularTvSeriesPage> {
   @override
   void initState() {
     super.initState();
-    // langsung dispatch event saat halaman pertama kali muncul
     Future.microtask(() {
       context.read<PopularTvSeriesBloc>().add(FetchPopularTvSeries());
     });

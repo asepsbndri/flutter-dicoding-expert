@@ -7,6 +7,7 @@ abstract class TvSeriesSearchEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+
 class OnTvSeriesQueryChanged extends TvSeriesSearchEvent {
   final String query;
 

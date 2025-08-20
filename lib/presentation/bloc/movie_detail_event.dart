@@ -15,8 +15,9 @@ class FetchMovieDetailEvent extends MovieDetailEvent {
   List<Object?> get props => [id];
 }
 
+
 class AddWatchlistEvent extends MovieDetailEvent {
-  final dynamic movie; // pakai MovieDetail entity
+  final dynamic movie; 
   const AddWatchlistEvent(this.movie);
 
   @override

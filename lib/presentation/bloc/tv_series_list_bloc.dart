@@ -52,6 +52,7 @@ class TvSeriesListBloc extends Bloc<TvSeriesListEvent, TvSeriesListState> {
       FetchTopRatedTvSeries event, Emitter<TvSeriesListState> emit) async {
     emit(state.copyWith(topRatedTvSeriesState: RequestState.Loading));
 
+
     final result = await getTopRatedTvSeries.execute();
     result.fold(
       (failure) => emit(state.copyWith(

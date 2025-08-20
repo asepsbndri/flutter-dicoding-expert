@@ -18,6 +18,7 @@ class WatchlistMovieState extends Equatable {
     RequestState? watchlistState,
     String? message,
   }) {
+    
     return WatchlistMovieState(
       watchlistMovies: watchlistMovies ?? this.watchlistMovies,
       watchlistState: watchlistState ?? this.watchlistState,

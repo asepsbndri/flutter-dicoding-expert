@@ -9,7 +9,7 @@ import 'package:ditonton/presentation/bloc/on_airing_tv_series_bloc.dart';
 import 'package:ditonton/presentation/bloc/popular_movies_bloc.dart';
 import 'package:ditonton/presentation/bloc/popular_tv_series_bloc.dart';
 import 'package:ditonton/presentation/bloc/top_rated_movies_bloc.dart';
-import 'package:ditonton/presentation/bloc/top_rated_series_bloc.dart';
+import 'package:ditonton/presentation/bloc/top_rated_tv_series_bloc.dart';
 import 'package:ditonton/presentation/bloc/tv_series_detail_bloc.dart';
 import 'package:ditonton/presentation/bloc/tv_series_list_bloc.dart';
 import 'package:ditonton/presentation/bloc/watchlist_movies_bloc.dart';

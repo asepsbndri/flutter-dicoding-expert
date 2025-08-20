@@ -24,6 +24,7 @@ class PopularMoviesState extends Equatable {
       message: message ?? this.message,
     );
   }
+  
 
   @override
   List<Object?> get props => [state, movies, message];

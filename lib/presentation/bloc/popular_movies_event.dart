@@ -8,3 +8,4 @@ abstract class PopularMoviesEvent extends Equatable {
 }
 
 class FetchPopularMovies extends PopularMoviesEvent {}
+

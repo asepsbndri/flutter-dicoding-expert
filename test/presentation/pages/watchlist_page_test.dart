@@ -1,74 +1,166 @@
-// import 'package:ditonton/common/state_enum.dart';
-// import 'package:ditonton/presentation/pages/watchlist_page.dart';
-// import 'package:ditonton/presentation/provider/watchlist_movie_notifier.dart';
-// import 'package:ditonton/presentation/provider/watchlist_tv_series_notifier.dart';
-// import 'package:ditonton/presentation/widgets/movie_card_list.dart';
-// import 'package:ditonton/presentation/widgets/tv_series_card.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:mockito/annotations.dart';
-// import 'package:mockito/mockito.dart';
-// import 'package:provider/provider.dart';
+import 'package:bloc_test/bloc_test.dart';
+import 'package:ditonton/common/state_enum.dart';
+import 'package:ditonton/domain/entities/movie.dart';
+import 'package:ditonton/domain/entities/tv_series.dart';
+import 'package:ditonton/presentation/bloc/watchlist_movies_bloc.dart';
+import 'package:ditonton/presentation/bloc/watchlist_movies_event.dart';
+import 'package:ditonton/presentation/bloc/watchlist_movies_state.dart';
+import 'package:ditonton/presentation/bloc/watchlist_tv_series_bloc.dart';
+import 'package:ditonton/presentation/bloc/watchlist_tv_series_event.dart';
+import 'package:ditonton/presentation/bloc/watchlist_tv_series_state.dart';
+import 'package:ditonton/presentation/pages/watchlist_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-// import '../../dummy_data/dummy_objects.dart';
-// import 'watchlist_page_test.mocks.dart';
+class MockWatchlistMovieBloc
+    extends MockBloc<WatchlistMovieEvent, WatchlistMovieState>
+    implements WatchlistMovieBloc {}
 
-// @GenerateMocks([WatchlistMovieNotifier, WatchlistTvSeriesNotifier])
-// void main() {
-//   late MockWatchlistMovieNotifier mockMovieNotifier;
-//   late MockWatchlistTvSeriesNotifier mockTvNotifier;
+class MockWatchlistTvBloc
+    extends MockBloc<WatchlistTvEvent, WatchlistTvState>
+    implements WatchlistTvBloc {}
 
-//   setUp(() {
-//     mockMovieNotifier = MockWatchlistMovieNotifier();
-//     mockTvNotifier = MockWatchlistTvSeriesNotifier();
-//   });
+void main() {
+  late MockWatchlistMovieBloc mockMovieBloc;
+  late MockWatchlistTvBloc mockTvBloc;
 
-//   Widget makeTestableWidget(Widget body) {
-//     return MultiProvider(
-//       providers: [
-//         ChangeNotifierProvider<WatchlistMovieNotifier>.value(
-//             value: mockMovieNotifier),
-//         ChangeNotifierProvider<WatchlistTvSeriesNotifier>.value(
-//             value: mockTvNotifier),
-//       ],
-//       child: MaterialApp(home: body),
-//     );
-//   }
+  setUp(() {
+    mockMovieBloc = MockWatchlistMovieBloc();
+    mockTvBloc = MockWatchlistTvBloc();
+  });
 
-//   testWidgets('Should show CircularProgressIndicator when loading',
-//       (WidgetTester tester) async {
-//     when(mockMovieNotifier.watchlistState).thenReturn(RequestState.Loading);
-//     when(mockTvNotifier.watchlistState).thenReturn(RequestState.Loading);
+  Widget makeTestableWidget(Widget body) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<WatchlistMovieBloc>.value(value: mockMovieBloc),
+        BlocProvider<WatchlistTvBloc>.value(value: mockTvBloc),
+      ],
+      child: MaterialApp(
+        home: body,
+      ),
+    );
+  }
 
-//     await tester.pumpWidget(makeTestableWidget(WatchlistPage()));
+  final tMovie = Movie(
+    adult: false,
+    backdropPath: '/path.jpg',
+    genreIds: [1, 2],
+    id: 1,
+    originalTitle: 'Original Title',
+    overview: 'Overview',
+    popularity: 1.0,
+    posterPath: '/poster.jpg',
+    releaseDate: '2020-01-01',
+    title: 'Test Movie',
+    video: false,
+    voteAverage: 8.0,
+    voteCount: 100,
+  );
 
-//     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-//   });
+  final tTvSeries = TvSeries(
+    adult: false,
+    backdropPath: '/backdrop.jpg',
+    firstAirDate: '2021-01-01',
+    genreIds: [1, 2],
+    id: 2,
+    name: 'Test TV',
+    originalName: 'Original TV',
+    overview: 'Overview tv',
+    popularity: 2.0,
+    posterPath: '/poster_tv.jpg',
+    voteAverage: 7.5,
+    voteCount: 50,
+  );
 
-//   testWidgets('Should show MovieCard and TvSeriesCard when data loaded',
-//       (WidgetTester tester) async {
-//     when(mockMovieNotifier.watchlistState).thenReturn(RequestState.Loaded);
-//     when(mockMovieNotifier.watchlistMovies).thenReturn([testMovie]);
+  testWidgets('Menampilkan loading indicator saat loading',
+      (WidgetTester tester) async {
+    when(() => mockMovieBloc.state).thenReturn(
+      WatchlistMovieState(
+        watchlistState: RequestState.Loading,
+        watchlistMovies: const [],
+        message: '',
+      ),
+    );
+    when(() => mockTvBloc.state).thenReturn(
+      WatchlistTvState(
+        watchlistState: RequestState.Loading,
+        watchlistTvSeries: const [],
+        message: '',
+      ),
+    );
 
-//     when(mockTvNotifier.watchlistState).thenReturn(RequestState.Loaded);
-//     when(mockTvNotifier.watchlistTvSeries).thenReturn([testTvSeries]);
+    await tester.pumpWidget(makeTestableWidget(const WatchlistPage()));
 
-//     await tester.pumpWidget(makeTestableWidget(WatchlistPage()));
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
 
-//     expect(find.byType(MovieCard), findsOneWidget);
-//     expect(find.byType(TvSeriesCard), findsOneWidget);
-//   });
+  testWidgets('Menampilkan data movie dan tv ketika loaded',
+      (WidgetTester tester) async {
+    when(() => mockMovieBloc.state).thenReturn(
+      WatchlistMovieState(
+        watchlistState: RequestState.Loaded,
+        watchlistMovies: [tMovie],
+        message: '',
+      ),
+    );
+    when(() => mockTvBloc.state).thenReturn(
+      WatchlistTvState(
+        watchlistState: RequestState.Loaded,
+        watchlistTvSeries: [tTvSeries],
+        message: '',
+      ),
+    );
 
-//   testWidgets('Should show error message when error state',
-//       (WidgetTester tester) async {
-//     when(mockMovieNotifier.watchlistState).thenReturn(RequestState.Error);
-//     when(mockMovieNotifier.message).thenReturn('Failed to fetch movies');
+    await tester.pumpWidget(makeTestableWidget(const WatchlistPage()));
 
-//     when(mockTvNotifier.watchlistState).thenReturn(RequestState.Error);
-//     when(mockTvNotifier.message).thenReturn('Failed to fetch tv');
+    expect(find.text('Test Movie'), findsOneWidget);
+    expect(find.text('Test TV'), findsOneWidget);
+  });
 
-//     await tester.pumpWidget(makeTestableWidget(WatchlistPage()));
+  testWidgets('Menampilkan pesan error saat error',
+      (WidgetTester tester) async {
+    when(() => mockMovieBloc.state).thenReturn(
+      WatchlistMovieState(
+        watchlistState: RequestState.Error,
+        watchlistMovies: const [],
+        message: 'Error Movie',
+      ),
+    );
+    when(() => mockTvBloc.state).thenReturn(
+      WatchlistTvState(
+        watchlistState: RequestState.Error,
+        watchlistTvSeries: const [],
+        message: 'Error TV',
+      ),
+    );
 
-//     expect(find.text('Failed to fetch movies'), findsOneWidget);
-//   });
-// }
+    await tester.pumpWidget(makeTestableWidget(const WatchlistPage()));
+
+    expect(find.byKey(const Key('error_message')), findsOneWidget);
+    expect(find.text('Error Movie'), findsOneWidget);
+  });
+
+  testWidgets('Menampilkan pesan kosong saat watchlist kosong',
+      (WidgetTester tester) async {
+    when(() => mockMovieBloc.state).thenReturn(
+      WatchlistMovieState(
+        watchlistState: RequestState.Loaded,
+        watchlistMovies: const [],
+        message: '',
+      ),
+    );
+    when(() => mockTvBloc.state).thenReturn(
+      WatchlistTvState(
+        watchlistState: RequestState.Loaded,
+        watchlistTvSeries: const [],
+        message: '',
+      ),
+    );
+
+    await tester.pumpWidget(makeTestableWidget(const WatchlistPage()));
+
+    expect(find.text('Watchlist masih kosong'), findsOneWidget);
+  });
+}

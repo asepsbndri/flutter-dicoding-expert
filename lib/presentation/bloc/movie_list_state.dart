@@ -13,6 +13,7 @@ class MovieListState extends Equatable {
   final RequestState topRatedMoviesState;
 
   final String message;
+  
 
   const MovieListState({
     this.nowPlayingMovies = const [],

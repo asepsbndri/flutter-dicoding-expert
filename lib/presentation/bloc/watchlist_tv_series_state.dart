@@ -24,6 +24,7 @@ class WatchlistTvState extends Equatable {
       message: message ?? this.message,
     );
   }
+  
 
   @override
   List<Object?> get props => [watchlistState, watchlistTvSeries, message];

@@ -25,6 +25,7 @@ class TopRatedMoviesState extends Equatable {
     );
   }
 
+
   @override
   List<Object?> get props => [state, movies, message];
 }

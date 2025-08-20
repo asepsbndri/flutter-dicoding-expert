@@ -31,3 +31,4 @@ class PopularMoviesBloc extends Bloc<PopularMoviesEvent, PopularMoviesState> {
     });
   }
 }
+

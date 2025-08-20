@@ -23,6 +23,7 @@ class OnAiringTvSeriesBloc
             message: failure.message,
           ));
         },
+        
         (tvSeriesData) {
           emit(state.copyWith(
             state: RequestState.Loaded,

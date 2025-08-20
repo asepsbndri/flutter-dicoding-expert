@@ -53,3 +53,4 @@ class MovieDetailState extends Equatable {
         watchlistMessage,
       ];
 }
+

@@ -10,6 +10,7 @@ class TvSeriesSearchBloc extends Bloc<TvSeriesSearchEvent, TvSeriesSearchState> 
     on<OnTvSeriesQueryChanged>((event, emit) async {
       final query = event.query;
 
+
       emit(TvSeriesSearchLoading());
 
       final result = await searchTvSeries.execute(query);

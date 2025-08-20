@@ -1,108 +1,165 @@
-// import 'package:ditonton/common/state_enum.dart';
-// import 'package:ditonton/domain/entities/tv_series.dart';
-// import 'package:ditonton/presentation/pages/tv_series_detail_page.dart';
-// import 'package:ditonton/presentation/provider/tv_series_detail_notifier.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:mockito/annotations.dart';
-// import 'package:mockito/mockito.dart';
-// import 'package:provider/provider.dart';
+import 'package:bloc_test/bloc_test.dart';
+import 'package:ditonton/common/state_enum.dart';
+import 'package:ditonton/domain/entities/genre.dart';
+import 'package:ditonton/domain/entities/tv_series.dart';
+import 'package:ditonton/domain/entities/tv_series_detail.dart';
+import 'package:ditonton/presentation/bloc/tv_series_detail_bloc.dart';
+import 'package:ditonton/presentation/bloc/tv_series_detail_event.dart';
+import 'package:ditonton/presentation/bloc/tv_series_detail_state.dart';
+import 'package:ditonton/presentation/pages/tv_series_detail_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
-// import '../../dummy_data/dummy_objects.dart';
-// import 'tv_series_detail_page_test.mocks.dart';
+class MockTvSeriesDetailBloc
+    extends MockBloc<TvSeriesDetailEvent, TvSeriesDetailState>
+    implements TvSeriesDetailBloc {}
 
-// @GenerateMocks([TvSeriesDetailNotifier])
-// void main() {
-//   late MockTvSeriesDetailNotifier mockNotifier;
+class FakeTvSeriesDetailEvent extends Fake implements TvSeriesDetailEvent {}
+class FakeTvSeriesDetailState extends Fake implements TvSeriesDetailState {}
 
-//   setUp(() {
-//     mockNotifier = MockTvSeriesDetailNotifier();
-//   });
+void main() {
+  late MockTvSeriesDetailBloc mockBloc;
 
-//   Widget makeTestableWidget(Widget body) {
-//     return ChangeNotifierProvider<TvSeriesDetailNotifier>.value(
-//       value: mockNotifier,
-//       child: MaterialApp(home: body),
-//     );
-//   }
+  setUpAll(() {
+    registerFallbackValue(FakeTvSeriesDetailEvent());
+    registerFallbackValue(FakeTvSeriesDetailState());
+  });
 
-//   testWidgets(
-//       'Watchlist button should display add icon when tv not added to watchlist',
-//       (WidgetTester tester) async {
-//     when(mockNotifier.tvSeriesState).thenReturn(RequestState.Loaded);
-//     when(mockNotifier.tvSeries).thenReturn(testTvSeriesDetail);
-//     when(mockNotifier.recommendationState).thenReturn(RequestState.Loaded);
-//     when(mockNotifier.tvSeriesRecommendations).thenReturn(<TvSeries>[]);
-//     when(mockNotifier.isAddedToWatchlist).thenReturn(false);
+  setUp(() {
+    mockBloc = MockTvSeriesDetailBloc();
+  });
 
-//     final watchlistButtonIcon = find.byIcon(Icons.add);
+  Widget makeTestableWidget() {
+    return BlocProvider<TvSeriesDetailBloc>.value(
+      value: mockBloc,
+      child: const MaterialApp(
+        home: TvSeriesDetailPage(id: 1),
+      ),
+    );
+  }
 
-//     await tester.pumpWidget(makeTestableWidget(TvSeriesDetailPage(id: 1)));
+  final tTvSeriesDetail = TvSeriesDetail(
+    id: 1,
+    name: 'Test TV',
+    overview: 'Overview test',
+    posterPath: '/test.jpg',
+    backdropPath: '/backdrop.jpg',
+    voteAverage: 8.0,
+    voteCount: 100,
+    genres: [
+      Genre(id: 1, name: 'Drama'),
+      Genre(id: 2, name: 'Action'),
+    ],
+    firstAirDate: '2021-01-01',
+    numberOfSeasons: 2,
+    numberOfEpisodes: 20,
+  );
 
-//     expect(watchlistButtonIcon, findsOneWidget);
-//   });
+  final tTvSeries = TvSeries(
+    adult: false,
+    backdropPath: '/backdrop.jpg',
+    firstAirDate: '2021-01-01',
+    genreIds: [1, 2],
+    voteAverage: 8.0,
+    originalName: "Test TV",
+    voteCount: 100,
+    popularity: 50.0,
+    id: 1,
+    name: 'Test TV',
+    overview: 'Overview test',
+    posterPath: '/test.jpg',
+  );
 
-//   testWidgets(
-//       'Watchlist button should display check icon when tv is added to watchlist',
-//       (WidgetTester tester) async {
-//     when(mockNotifier.tvSeriesState).thenReturn(RequestState.Loaded);
-//     when(mockNotifier.tvSeries).thenReturn(testTvSeriesDetail);
-//     when(mockNotifier.recommendationState).thenReturn(RequestState.Loaded);
-//     when(mockNotifier.tvSeriesRecommendations).thenReturn(<TvSeries>[]);
-//     when(mockNotifier.isAddedToWatchlist).thenReturn(true);
+  testWidgets('menampilkan loading ketika state Loading',
+      (WidgetTester tester) async {
+    when(() => mockBloc.state).thenReturn(
+      TvSeriesDetailState(tvSeriesState: RequestState.Loading),
+    );
 
-//     final watchlistButtonIcon = find.byIcon(Icons.check);
+    await tester.pumpWidget(makeTestableWidget());
 
-//     await tester.pumpWidget(makeTestableWidget(TvSeriesDetailPage(id: 1)));
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
 
-//     expect(watchlistButtonIcon, findsOneWidget);
-//   });
+  // testWidgets('menampilkan detail tv ketika state Loaded',
+  //     (WidgetTester tester) async {
+  //   when(() => mockBloc.state).thenReturn(
+  //     TvSeriesDetailState(
+  //       tvSeriesState: RequestState.Loaded,
+  //       tvSeries: tTvSeriesDetail,
+  //       isAddedToWatchlist: false,
+  //       recommendations: [tTvSeries],
+  //     ),
+  //   );
 
-//   testWidgets(
-//     'Watchlist button should display Snackbar when added to watchlist',
-//     (WidgetTester tester) async {
-//       when(mockNotifier.tvSeriesState).thenReturn(RequestState.Loaded);
-//       when(mockNotifier.tvSeries).thenReturn(testTvSeriesDetail);
-//       when(mockNotifier.recommendationState).thenReturn(RequestState.Loaded);
-//       when(mockNotifier.tvSeriesRecommendations).thenReturn(<TvSeries>[]);
-//       when(mockNotifier.isAddedToWatchlist).thenReturn(false);
-//       when(mockNotifier.watchlistMessage).thenReturn('Added to Watchlist');
+  //   await tester.pumpWidget(makeTestableWidget());
 
-//       final watchlistButton = find.byType(FilledButton);
+  //   expect(find.text('Test TV'), findsOneWidget);
+  //   expect(find.text('Overview test'), findsOneWidget);
+  //   expect(find.text('Drama'), findsOneWidget);
+  //   expect(find.byType(FilledButton), findsOneWidget);
+  // });
 
-//       await tester.pumpWidget(makeTestableWidget(TvSeriesDetailPage(id: 1)));
+  testWidgets('menampilkan error ketika state Error',
+      (WidgetTester tester) async {
+    when(() => mockBloc.state).thenReturn(
+      TvSeriesDetailState(
+        tvSeriesState: RequestState.Error,
+        message: 'Error Message',
+      ),
+    );
 
-//       expect(find.byIcon(Icons.add), findsOneWidget);
+    await tester.pumpWidget(makeTestableWidget());
 
-//       await tester.tap(watchlistButton);
-//       await tester.pump();
+    expect(find.text('Error Message'), findsOneWidget);
+  });
 
-//       expect(find.byType(SnackBar), findsOneWidget);
-//       expect(find.text('Added to Watchlist'), findsOneWidget);
-//     },
-//   );
+  testWidgets('menampilkan rekomendasi ketika recommendation Loaded',
+      (WidgetTester tester) async {
+    when(() => mockBloc.state).thenReturn(
+      TvSeriesDetailState(
+        tvSeriesState: RequestState.Loaded,
+        tvSeries: tTvSeriesDetail,
+        recommendationState: RequestState.Loaded,
+        recommendations: [tTvSeries],
+      ),
+    );
 
-//   testWidgets(
-//     'Watchlist button should display AlertDialog when add to watchlist failed',
-//     (WidgetTester tester) async {
-//       when(mockNotifier.tvSeriesState).thenReturn(RequestState.Loaded);
-//       when(mockNotifier.tvSeries).thenReturn(testTvSeriesDetail);
-//       when(mockNotifier.recommendationState).thenReturn(RequestState.Loaded);
-//       when(mockNotifier.tvSeriesRecommendations).thenReturn(<TvSeries>[]);
-//       when(mockNotifier.isAddedToWatchlist).thenReturn(false);
-//       when(mockNotifier.watchlistMessage).thenReturn('Failed');
+    await tester.pumpWidget(makeTestableWidget());
 
-//       final watchlistButton = find.byType(FilledButton);
+    expect(find.byType(ListView), findsOneWidget);
+  });
 
-//       await tester.pumpWidget(makeTestableWidget(TvSeriesDetailPage(id: 1)));
+  testWidgets('menampilkan error rekomendasi ketika recommendation Error',
+      (WidgetTester tester) async {
+    when(() => mockBloc.state).thenReturn(
+      TvSeriesDetailState(
+        tvSeriesState: RequestState.Loaded,
+        tvSeries: tTvSeriesDetail,
+        recommendationState: RequestState.Error,
+        message: 'Recommendation Error',
+      ),
+    );
 
-//       expect(find.byIcon(Icons.add), findsOneWidget);
+    await tester.pumpWidget(makeTestableWidget());
 
-//       await tester.tap(watchlistButton);
-//       await tester.pump();
+    expect(find.text('Recommendation Error'), findsOneWidget);
+  });
 
-//       expect(find.byType(AlertDialog), findsOneWidget);
-//       expect(find.text('Failed'), findsOneWidget);
-//     },
-//   );
-// }
+  // testWidgets('menampilkan CircularProgressIndicator ketika recommendation Loading',
+  //     (WidgetTester tester) async {
+  //   when(() => mockBloc.state).thenReturn(
+  //     TvSeriesDetailState(
+  //       tvSeriesState: RequestState.Loaded,
+  //       tvSeries: tTvSeriesDetail,
+  //       recommendationState: RequestState.Loading,
+  //     ),
+  //   );
+
+  //   await tester.pumpWidget(makeTestableWidget());
+
+  //   expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  // });
+}

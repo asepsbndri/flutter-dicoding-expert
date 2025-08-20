@@ -1,55 +1,105 @@
-// import 'package:ditonton/common/state_enum.dart';
-// import 'package:ditonton/presentation/pages/on_airing_tv_series_page.dart';
-// import 'package:ditonton/presentation/provider/on_airing_tv_series_notifier.dart';
-// import 'package:ditonton/presentation/widgets/tv_series_card.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:mockito/annotations.dart';
-// import 'package:mockito/mockito.dart';
-// import 'package:provider/provider.dart';
+import 'package:ditonton/common/state_enum.dart';
+import 'package:ditonton/domain/entities/tv_series.dart';
+import 'package:ditonton/presentation/bloc/on_airing_tv_series_bloc.dart';
+import 'package:ditonton/presentation/bloc/on_airing_tv_series_event.dart';
+import 'package:ditonton/presentation/bloc/on_airing_tv_series_state.dart';
+import 'package:ditonton/presentation/pages/on_airing_tv_series_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
-// import '../../dummy_data/dummy_objects.dart';
-// import 'on_airing_tv_series_page_test.mocks.dart';
+class MockOnAiringTvSeriesBloc
+    extends Mock implements OnAiringTvSeriesBloc {}
 
-// @GenerateMocks([OnAiringTvSeriesNotifier])
-// void main() {
-//   late MockOnAiringTvSeriesNotifier mockNotifier;
+class FakeOnAiringTvSeriesState extends Fake
+    implements OnAiringTvSeriesState {}
 
-//   setUp(() {
-//     mockNotifier = MockOnAiringTvSeriesNotifier();
-//   });
+class FakeOnAiringTvSeriesEvent extends Fake
+    implements OnAiringTvSeriesEvent {}
 
-//   Widget makeTestableWidget(Widget body) {
-//     return ChangeNotifierProvider<OnAiringTvSeriesNotifier>.value(
-//       value: mockNotifier,
-//       child: MaterialApp(home: body),
-//     );
-//   }
+void main() {
+  late MockOnAiringTvSeriesBloc mockBloc;
 
-//   testWidgets('Should display progress indicator when loading', (tester) async {
-//     when(mockNotifier.state).thenReturn(RequestState.Loading);
+  setUpAll(() {
+    registerFallbackValue(FakeOnAiringTvSeriesState());
+    registerFallbackValue(FakeOnAiringTvSeriesEvent());
+  });
 
-//     await tester.pumpWidget(makeTestableWidget(OnAiringTvSeriesPage()));
+  setUp(() {
+    mockBloc = MockOnAiringTvSeriesBloc();
+  });
 
-//     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-//   });
+  Widget makeTestableWidget(Widget body) {
+    return MaterialApp(
+      home: BlocProvider<OnAiringTvSeriesBloc>.value(
+        value: mockBloc,
+        child: body,
+      ),
+    );
+  }
 
-//   testWidgets('Should display ListView when data loaded', (tester) async {
-//     when(mockNotifier.state).thenReturn(RequestState.Loaded);
-//     when(mockNotifier.tvSeries).thenReturn([testTvSeries]);
+  // testWidgets('menampilkan CircularProgressIndicator ketika state Loading',
+  //     (WidgetTester tester) async {
+  //   when(() => mockBloc.state).thenReturn(
+  //     OnAiringTvSeriesState(state: RequestState.Loading),
+  //   );
 
-//     await tester.pumpWidget(makeTestableWidget(OnAiringTvSeriesPage()));
+  //   await tester.pumpWidget(makeTestableWidget(const OnAiringTvSeriesPage()));
 
-//     expect(find.byType(ListView), findsOneWidget);
-//     expect(find.byType(TvSeriesCard), findsOneWidget);
-//   });
+  //   expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  // });
 
-//   testWidgets('Should display error message when error', (tester) async {
-//     when(mockNotifier.state).thenReturn(RequestState.Error);
-//     when(mockNotifier.message).thenReturn('Failed');
+  // testWidgets('menampilkan ListView ketika state Loaded',
+  //     (WidgetTester tester) async {
+  //   final testTv = TvSeries
+  //   (id: 1,
+  //   adult: false,
+  //    name: "Test TV",
+  //     overview: "Overview",
+  //     posterPath: "/path.jpg",
+  //     firstAirDate: "2020-01-01",
+  //     voteAverage: 8.0,
+  //     voteCount: 100,
+  //     genreIds: [1],
+  //     backdropPath: "/backdrop.jpg",
+  //     popularity: 50,
+  //     originalName: "Test TV"
+  //   );
+  //   when(() => mockBloc.state).thenReturn(
+  //     OnAiringTvSeriesState(
+  //       state: RequestState.Loaded,
+  //       tvSeries: [testTv],
+  //     ),
+  //   );
 
-//     await tester.pumpWidget(makeTestableWidget(OnAiringTvSeriesPage()));
+  //   await tester.pumpWidget(makeTestableWidget(const OnAiringTvSeriesPage()));
 
-//     expect(find.text('Failed'), findsOneWidget);
-//   });
-// }
+  //   expect(find.byType(ListView), findsOneWidget);
+  //   expect(find.text("Test TV"), findsOneWidget);
+  // });
+
+  // testWidgets('menampilkan error message ketika state Error',
+  //     (WidgetTester tester) async {
+  //   when(() => mockBloc.state).thenReturn(
+  //     OnAiringTvSeriesState(
+  //       state: RequestState.Error,
+  //       message: "Error terjadi",
+  //     ),
+  //   );
+
+  //   await tester.pumpWidget(makeTestableWidget(const OnAiringTvSeriesPage()));
+
+  //   expect(find.byKey(const Key('error_message')), findsOneWidget);
+  //   expect(find.text("Error terjadi"), findsOneWidget);
+  // });
+
+  // testWidgets('menampilkan teks default ketika state Empty',
+  //     (WidgetTester tester) async {
+  //   when(() => mockBloc.state).thenReturn(OnAiringTvSeriesState());
+
+  //   await tester.pumpWidget(makeTestableWidget(const OnAiringTvSeriesPage()));
+
+  //   expect(find.text("Tidak ada data"), findsOneWidget);
+  // });
+}

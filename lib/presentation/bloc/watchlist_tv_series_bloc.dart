@@ -14,6 +14,7 @@ class WatchlistTvBloc extends Bloc<WatchlistTvEvent, WatchlistTvState> {
 
       final result = await getWatchlistTvSeries.execute();
 
+
       result.fold(
         (failure) {
           emit(state.copyWith(

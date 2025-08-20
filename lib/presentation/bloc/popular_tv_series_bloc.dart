@@ -13,6 +13,7 @@ class PopularTvSeriesBloc
     on<FetchPopularTvSeries>((event, emit) async {
       emit(state.copyWith(state: RequestState.Loading));
 
+
       final result = await getPopularTvSeries.execute();
       result.fold(
         (failure) => emit(

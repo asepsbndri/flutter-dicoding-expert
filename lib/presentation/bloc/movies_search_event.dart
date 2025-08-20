@@ -15,3 +15,4 @@ class OnMovieQueryChanged extends MovieSearchEvent {
   @override
   List<Object?> get props => [query];
 }
+

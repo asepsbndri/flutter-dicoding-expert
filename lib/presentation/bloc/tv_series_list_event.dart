@@ -12,3 +12,4 @@ class FetchOnAiringTvSeries extends TvSeriesListEvent {}
 class FetchPopularTvSeries extends TvSeriesListEvent {}
 
 class FetchTopRatedTvSeries extends TvSeriesListEvent {}
+

@@ -12,6 +12,7 @@ class WatchlistMovieBloc extends Bloc<WatchlistMovieEvent, WatchlistMovieState> 
     on<FetchWatchlistMovies>((event, emit) async {
       emit(state.copyWith(watchlistState: RequestState.Loading));
 
+
       final result = await getWatchlistMovies.execute();
       result.fold(
         (failure) {

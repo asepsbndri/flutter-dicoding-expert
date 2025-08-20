@@ -65,6 +65,7 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
           },
         );
       },
+      
     );
   }
 

@@ -8,3 +8,4 @@ abstract class WatchlistTvEvent extends Equatable {
 }
 
 class FetchWatchlistTvSeries extends WatchlistTvEvent {}
+

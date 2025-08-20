@@ -18,6 +18,7 @@ class MovieSearchError extends MovieSearchState {
 
   const MovieSearchError(this.message);
 
+
   @override
   List<Object?> get props => [message];
 }

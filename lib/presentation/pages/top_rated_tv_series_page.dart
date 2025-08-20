@@ -4,9 +4,9 @@ import 'package:ditonton/presentation/widgets/tv_series_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/top_rated_series_bloc.dart';
-import '../bloc/top_rated_series_event.dart';
-import '../bloc/top_rated_series_state.dart';
+import '../bloc/top_rated_tv_series_bloc.dart';
+import '../bloc/top_rated_tv_series_event.dart';
+import '../bloc/top_rated_tv_series_state.dart';
 
 class TopRatedTvSeriesPage extends StatefulWidget {
   static const ROUTE_NAME = '/top-rated-tv';

@@ -17,6 +17,7 @@ class TvSeriesSearchError extends TvSeriesSearchState {
 
   const TvSeriesSearchError(this.message);
 
+
   @override
   List<Object?> get props => [message];
 }

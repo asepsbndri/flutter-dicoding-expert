@@ -12,6 +12,7 @@ class MovieListBloc extends Bloc<MovieListEvent, MovieListState> {
   final GetPopularMovies getPopularMovies;
   final GetTopRatedMovies getTopRatedMovies;
 
+
   MovieListBloc({
     required this.getNowPlayingMovies,
     required this.getPopularMovies,
