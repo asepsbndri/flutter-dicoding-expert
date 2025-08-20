@@ -50,11 +50,18 @@ final locator = GetIt.instance;
 void setup() async {
   locator.registerSingletonAsync<PinnedHttpClient>(
       () async => await PinnedHttpClient.create());
+
   locator.registerSingletonWithDependencies<MovieRemoteDataSource>(
     () => MovieRemoteDataSourceImpl(client: locator<PinnedHttpClient>()),
     dependsOn: [PinnedHttpClient],
   );
+
+  locator.registerSingletonWithDependencies<TvSeriesRemoteDataSource>(
+    () => TvSeriesRemoteDataSourceImpl(client: locator<PinnedHttpClient>()),
+    dependsOn: [PinnedHttpClient],
+  );
 }
+
 
 void init() {
   // provider

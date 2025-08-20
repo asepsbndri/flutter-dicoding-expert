@@ -10,40 +10,44 @@ class PinnedHttpClient extends http.BaseClient {
   PinnedHttpClient({required this.securityContext}) {
     final httpClient = HttpClient(context: securityContext);
 
-    // Timeout
     httpClient.connectionTimeout = const Duration(seconds: 10);
 
     httpClient.badCertificateCallback =
         (X509Certificate cert, String host, int port) {
-      
-      return false; 
+      return false;
     };
 
     _innerClient = IOClient(httpClient);
   }
 
-  @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    try {
-      final response = await _innerClient.send(request);
-      return response;
-    } catch (e) {
-      throw Exception('Gagal melakukan request: $e');
-    }
+ @override
+Future<http.StreamedResponse> send(http.BaseRequest request) async {
+  try {
+    final response = await _innerClient.send(request);
+    print('Request ke ${request.url} berhasil dengan status ${response.statusCode}');
+    return response;
+  } catch (e) {
+    print('Gagal melakukan request: $e');
+    throw Exception('Gagal melakukan request: $e');
   }
+}
+
 
   @override
   void close() => _innerClient.close();
 
-  static Future<PinnedHttpClient> create() async {
-    try {
-      final sslCert = await rootBundle.load('certificates/certificates.pem');
-      final securityContext = SecurityContext(withTrustedRoots: false);
-      securityContext.setTrustedCertificatesBytes(sslCert.buffer.asInt8List());
+ static Future<PinnedHttpClient> create() async {
+  try {
+    final sslCert = await rootBundle.load('certificates/certificates.pem');
+    print('Sertifikat berhasil dimuat, ukuran: ${sslCert} bytes');
+    final securityContext = SecurityContext(withTrustedRoots: false);
+    securityContext.setTrustedCertificatesBytes(sslCert.buffer.asInt8List());
 
-      return PinnedHttpClient(securityContext: securityContext);
-    } catch (e) {
-      throw Exception('Gagal memuat sertifikat: $e');
-    }
+    return PinnedHttpClient(securityContext: securityContext);
+  } catch (e) {
+    print('Gagal memuat sertifikat: $e');
+    throw Exception('Gagal memuat sertifikat: $e');
   }
+}
+
 }
