@@ -1,12 +1,17 @@
 import 'package:ditonton/common/constants.dart';
-import 'package:ditonton/common/state_enum.dart';
-import 'package:ditonton/presentation/provider/movie_search_notifier.dart';
 import 'package:ditonton/presentation/widgets/movie_card_list.dart';
+import 'package:ditonton/presentation/widgets/tv_series_card.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../provider/tv_series_search_notifier.dart';
-import '../widgets/tv_series_card.dart';
+
+import 'package:ditonton/presentation/bloc/tv_series_search_bloc.dart';
+import 'package:ditonton/presentation/bloc/tv_series_search_event.dart';
+import 'package:ditonton/presentation/bloc/tv_series_search_state.dart';
+
+import '../bloc/movies_search_bloc.dart';
+import '../bloc/movies_search_event.dart';
+import '../bloc/movies_search_state.dart';
 
 class SearchPage extends StatefulWidget {
   static const ROUTE_NAME = '/search';
@@ -37,13 +42,11 @@ class _SearchPageState extends State<SearchPage>
 
   void _onSearch(String query) {
     if (_tabController.index == 0) {
-      // Movie
-      Provider.of<MovieSearchNotifier>(context, listen: false)
-          .fetchMovieSearch(query);
+      // Movies
+      context.read<MovieSearchBloc>().add(OnMovieQueryChanged(query));
     } else {
       // TV Series
-      Provider.of<TvSeriesSearchNotifier>(context, listen: false)
-          .fetchTvSeriesSearch(query);
+      context.read<TvSeriesSearchBloc>().add(OnTvSeriesQueryChanged(query));
     }
   }
 
@@ -53,10 +56,10 @@ class _SearchPageState extends State<SearchPage>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Search'),
+          title: const Text('Search'),
           bottom: TabBar(
             controller: _tabController,
-            tabs: [
+            tabs: const [
               Tab(text: "Movies"),
               Tab(text: "TV Series"),
             ],
@@ -70,26 +73,26 @@ class _SearchPageState extends State<SearchPage>
               TextField(
                 controller: _queryController,
                 onSubmitted: _onSearch,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Search title',
                   prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(),
                 ),
                 textInputAction: TextInputAction.search,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text('Search Result', style: kHeading6),
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    // Movies
-                    Consumer<MovieSearchNotifier>(
-                      builder: (context, data, child) {
-                        if (data.state == RequestState.Loading) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (data.state == RequestState.Loaded) {
-                          final result = data.searchResult;
+                    // Movies -> pakai Bloc
+                    BlocBuilder<MovieSearchBloc, MovieSearchState>(
+                      builder: (context, state) {
+                        if (state is MovieSearchLoading) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (state is MovieSearchHasData) {
+                          final result = state.result;
                           return ListView.builder(
                             padding: const EdgeInsets.all(8),
                             itemBuilder: (context, index) {
@@ -98,18 +101,21 @@ class _SearchPageState extends State<SearchPage>
                             },
                             itemCount: result.length,
                           );
+                        } else if (state is MovieSearchError) {
+                          return Center(child: Text(state.message));
                         } else {
-                          return Container();
+                          return const Center(child: Text("Cari Film"));
                         }
                       },
                     ),
-                    // TV Series
-                    Consumer<TvSeriesSearchNotifier>(
-                      builder: (context, data, child) {
-                        if (data.state == RequestState.Loading) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (data.state == RequestState.Loaded) {
-                          final result = data.searchResult;
+
+                    // TV Series -> pakai Bloc
+                    BlocBuilder<TvSeriesSearchBloc, TvSeriesSearchState>(
+                      builder: (context, state) {
+                        if (state is TvSeriesSearchLoading) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (state is TvSeriesSearchHasData) {
+                          final result = state.result;
                           return ListView.builder(
                             padding: const EdgeInsets.all(8),
                             itemBuilder: (context, index) {
@@ -118,8 +124,10 @@ class _SearchPageState extends State<SearchPage>
                             },
                             itemCount: result.length,
                           );
+                        } else if (state is TvSeriesSearchError) {
+                          return Center(child: Text(state.message));
                         } else {
-                          return Container();
+                          return const Center(child: Text("Cari TV Series"));
                         }
                       },
                     ),

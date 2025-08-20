@@ -1,8 +1,11 @@
 import 'package:ditonton/common/state_enum.dart';
-import 'package:ditonton/presentation/provider/on_airing_tv_series_notifier.dart';
 import 'package:ditonton/presentation/widgets/tv_series_card.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc/on_airing_tv_series_bloc.dart';
+import '../bloc/on_airing_tv_series_event.dart';
+import '../bloc/on_airing_tv_series_state.dart';
 
 class OnAiringTvSeriesPage extends StatefulWidget {
   static const ROUTE_NAME = '/on-airing-tv';
@@ -17,37 +20,41 @@ class _OnAiringTvSeriesPageState extends State<OnAiringTvSeriesPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<OnAiringTvSeriesNotifier>(context, listen: false)
-            .fetchOnAiringTvSeries());
+    Future.microtask(() {
+      context.read<OnAiringTvSeriesBloc>().add(FetchOnAiringTvSeries());
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('On Airing TV Series'),
+        title: const Text('On Airing TV Series'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<OnAiringTvSeriesNotifier>(
-          builder: (context, data, child) {
-            if (data.state == RequestState.Loading) {
-              return Center(
+        child: BlocBuilder<OnAiringTvSeriesBloc, OnAiringTvSeriesState>(
+          builder: (context, state) {
+            if (state.state == RequestState.Loading) {
+              return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.state == RequestState.Loaded) {
+            } else if (state.state == RequestState.Loaded) {
               return ListView.builder(
+                itemCount: state.tvSeries.length,
                 itemBuilder: (context, index) {
-                  final tv = data.tvSeries[index];
+                  final tv = state.tvSeries[index];
                   return TvSeriesCard(tv);
                 },
-                itemCount: data.tvSeries.length,
+              );
+            } else if (state.state == RequestState.Error) {
+              return Center(
+                key: const Key('error_message'),
+                child: Text(state.message),
               );
             } else {
-              return Center(
-                key: Key('error_message'),
-                child: Text(data.message),
+              return const Center(
+                child: Text('Tidak ada data'),
               );
             }
           },
