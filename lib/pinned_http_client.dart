@@ -14,7 +14,7 @@ class SslPinning {
         throw const SslPinningException("File sertifikat kosong");
       }
 
-      final context = SecurityContext(withTrustedRoots: true);
+      final context = SecurityContext(withTrustedRoots: false);
       context.setTrustedCertificatesBytes(bytes);
 
       final httpClient = HttpClient(context: context)
