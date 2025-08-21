@@ -24,7 +24,6 @@ import 'package:ditonton/presentation/pages/top_rated_movies_page.dart';
 import 'package:ditonton/presentation/pages/watchlist_page.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,18 +44,27 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  final client = await PinnedHttpClient.create();
+  try {
+    // coba inisialisasi SSL Pinning
+    await SslPinning.ioClientStrict();
+    await di.init();
 
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
-
-  di.init();
-  runApp(const MyApp());
+    runApp(const MyApp());
+  } catch (e) {
+    runApp(MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Text(
+            e.toString(), 
+            style: const TextStyle(color: Colors.red, fontSize: 16),
+          ),
+        ),
+      ),
+    ));
+  }
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

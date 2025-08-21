@@ -1,53 +1,39 @@
+// lib/data/utils/ssl_pinning.dart
 import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'package:http/io_client.dart';
 import 'package:flutter/services.dart';
+import 'package:http/io_client.dart';
 
-class PinnedHttpClient extends http.BaseClient {
-  final SecurityContext securityContext;
-  late final http.Client _innerClient;
+class SslPinning {
+  static Future<IOClient> ioClientStrict({
+    String assetPemPath = 'assets/certificates.cer',
+  }) async {
+    try {
+      final data = await rootBundle.load(assetPemPath);
+      final bytes = data.buffer.asUint8List();
+      if (bytes.isEmpty) {
+        throw const SslPinningException("File sertifikat kosong");
+      }
 
-  PinnedHttpClient({required this.securityContext}) {
-    final httpClient = HttpClient(context: securityContext);
+      final context = SecurityContext(withTrustedRoots: true);
+      context.setTrustedCertificatesBytes(bytes);
 
-    httpClient.connectionTimeout = const Duration(seconds: 10);
+      final httpClient = HttpClient(context: context)
+        ..connectionTimeout = const Duration(seconds: 20)
+        ..badCertificateCallback = (X509Certificate cert, String host, int port) {
+          return false; // jangan bypass
+        };
 
-    httpClient.badCertificateCallback =
-        (X509Certificate cert, String host, int port) {
-      return false;
-    };
-
-    _innerClient = IOClient(httpClient);
-  }
-
- @override
-Future<http.StreamedResponse> send(http.BaseRequest request) async {
-  try {
-    final response = await _innerClient.send(request);
-    print('Request ke ${request.url} berhasil dengan status ${response.statusCode}');
-    return response;
-  } catch (e) {
-    print('Gagal melakukan request: $e');
-    throw Exception('Gagal melakukan request: $e');
+      return IOClient(httpClient);
+    } catch (e) {
+      throw const SslPinningException("SSL gagal: sertifikat tidak valid / tidak ditemukan");
+    }
   }
 }
 
+class SslPinningException implements Exception {
+  final String message;
+  const SslPinningException(this.message);
 
   @override
-  void close() => _innerClient.close();
-
- static Future<PinnedHttpClient> create() async {
-  try {
-    final sslCert = await rootBundle.load('certificates/certificates.pem');
-    print('Sertifikat berhasil dimuat, ukuran: ${sslCert} bytes');
-    final securityContext = SecurityContext(withTrustedRoots: false);
-    securityContext.setTrustedCertificatesBytes(sslCert.buffer.asInt8List());
-
-    return PinnedHttpClient(securityContext: securityContext);
-  } catch (e) {
-    print('Gagal memuat sertifikat: $e');
-    throw Exception('Gagal memuat sertifikat: $e');
-  }
-}
-
+  String toString() => message;
 }
